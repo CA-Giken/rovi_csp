@@ -1,0 +1,16 @@
+@startuml
+component [cropper]
+component [prepro]
+component [searcher]
+component [picker]
+component [revolver]
+component (TF)
+
+cropper -right-> prepro
+prepro -right-> searcher : "Mode=[01]"
+searcher -right-> picker
+prepro --> picker : "Mode=[2]"
+picker -right-> TF
+picker --> revolver
+revolver --> picker
+@enduml

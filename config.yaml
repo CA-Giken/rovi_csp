@@ -1,0 +1,91 @@
+config_tf:
+  flange:
+    parent_frame_id: tool0_controller
+  prepro:
+    parent_frame_id: base
+    transform:
+      translation:
+        x: 843
+        y: 501
+        z: -363
+      rotation:
+        x: 0
+        y: 0
+        z: -0.707
+        w: 0.707
+  preproV1:
+    parent_frame_id: prepro
+    transform:
+      translation:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+        w: 1
+  preproV2:
+    parent_frame_id: prepro
+    transform:
+      translation:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+        w: 1
+  baseVT:
+    parent_frame_id: base
+    transform:
+      translation:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+        w: 1
+config:
+  bucket:   #for placer3d
+    frame: "prepro"
+    mesh: "package://rovi_csp/mesh/Bucket.stl"
+    color: "brown"
+    z0: "/prepro/bucket_height"
+  rsocket:
+    robot_ip: "192.168.1.1"
+#    robot_ip: "127.0.0.1"
+    capt_timeout: 15
+    update_frame_id: prepro
+    target_frame_id: camera/capture0/solve0/revolve
+    rebase_frame_id: baseVT
+    x1keys: ['probables','prob_m','prob_x','prob_z']
+    x1interlock: "/dashboard/ind/rsocket/enable"
+  report:
+    keys2: ["__recipe__","CaptRowNo","CaptColNo","ReCaptNo", "pcount","probables","prob_m","prob_x","prob_z","fitness","rmse","azimuth","rotation","transX","transY","transZ","tcap","tfeat","tmatch"]
+    labels2: ["レシピ","撮影段","撮影位置","再撮影", "点数","候補","柱距離","水平補正","干渉高","一致度","平均誤差","傾き[deg]","回転[deg]","⊿X[mm]","⊿Y[mm]","⊿Z[mm]","撮影[s]","特徴点[s]","マッチ[s]"]
+    keys: ["__recipe__","CaptRowNo","CaptColNo","ReCaptNo", "pcount","probables","prob_m","prob_x","prob_z","fitness","rmse","azimuth","rotation","rotX","rotY","rotZ","tcap","tfeat","tmatch"]
+    labels: ["レシピ","撮影段","撮影位置","再撮影","点数","候補","柱距離","水平補正","干渉高","一致度","平均誤差","傾き[deg]","回転[deg]","⊿X","⊿Y","⊿Z","撮影[s]","特徴点[s]","マッチ[s]"]
+    keys_log: ["day","time","rovi","error","hantei","__recipe__","CaptRowNo","CaptColNo","ReCaptNo", "pcount","probables","prob_m","prob_x","prob_z","fitness","rmse","azimuth","rotation","hosei_x","hosei_y","hosei_z","hosei_rx","hosei_ry","hosei_rz","tcap","tfeat","tmatch"]
+    labels_log: ["日付","時刻","命令","エラーコード","判定","レシピ","撮影段","撮影位置","再撮影","点数","候補","柱距離","端距離","軸端","一致度","平均誤差","傾き[deg]","回転[deg]","補正量 X[mm]","補正量 Y[mm]","補正量 Z[mm]","補正量 r1 [deg]","補正量 r2[deg]","補正量 r3[deg]","撮影処理時間[sec]","特徴処理時間[sec]","マッチング処理時間[sec]"]
+  picker:
+    base_frame_id: "camera/capture0"
+    reference_frame_id: "camera/capture0/solve0/revolve"
+  logger:
+    auto_save: 1
+    save_count: 10000
+    save_count_console: 10000
+    save_count_ng: 100
+  cropper:
+    capture_frame_id: ["camera","flange"]
+  prepro: 
+    near_dist: 10.0
+
+rovi:
+  ycam:
+    hdr:
+      enabled: false
+
