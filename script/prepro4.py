@@ -142,6 +142,7 @@ def pubReport(report):
       msg=String()
       msg.data=str(report)
       pub_str.publish(msg)
+      rospy.Timer(rospy.Duration(0.5),lambda ev: pub_str.publish(msg),oneshot=True)
   if context==1: rospy.Timer(rospy.Duration(0.2),lambda ev: pub_capture.publish(mTrue),oneshot=True)
 
 def pMap(pc,zlim=True):
@@ -173,16 +174,21 @@ def pMap(pc,zlim=True):
   return (xmap,ymap,zmap),(xb,yb,zb)
 
 def pCollectPeakX(pc):
+  t0=time.time()
   cmap,_=pMap(pc)
+  print("pCollectPeakX::pMap",time.time()-t0)
   xcod=[]
   ycod=[]
   zcod=[]
+  t0=time.time()
   peaks=mapper.peaks_min(cmap[1],crossing=False)   #search peaks along Y-coord
+  print("pCollectPeakX::peaks_min",time.time()-t0)
   for i,j in peaks:
     xcod.append(cmap[0][i,j])
     ycod.append(cmap[1][i,j])
     zcod.append(cmap[2][i,j])
 # convolve doubled peaks
+  t0=time.time()
   pcod=np.array([xcod,ycod,zcod]).T
   scod=[-1]*len(pcod)
   gcod=[]
@@ -204,16 +210,20 @@ def pCollectPeakX(pc):
     pp=pcod[np.array(scod)==i]
     kcod.append(pp[np.argmin(pp.T[1])])   #pick y min
 #    kcod.append(np.mean(pp,axis=0))   #pick mean
+  print("pCollectPeakX::peaks_convolve",len(pcod),len(kcod),time.time()-t0)
 # check peaks by ICP
+  t0=time.time()
   thres=Param["peak_threshold"]
   tcod=[]
   nrad=rospy.get_param(Config["normal_radius"])
   kcod=np.array(kcod)
-  print("peak con",len(pcod),len(kcod))
+  tsum=[]
   for p in kcod:
     if thres>0:
       pcro=mapper.crop(pc,p)
+      t1=time.time()
       fit,rmse,rt=mapper.evaluate(pcro,p,thres,radius=0)
+      tsum.append(time.time()-t1)
       if fit>Param["peak_fitness"] and rmse<Param["peak_rmse"]:
         tcod.append(rt)
         for n,t in enumerate(tcod[:-1]):
@@ -226,7 +236,7 @@ def pCollectPeakX(pc):
       rt[:3,3]=p
       tcod.append(rt)
   tcod=np.array(tcod)
-  print("peak icp",len(tcod))
+  print("pCollectPeakX::peaks_icp",len(tcod),time.time()-t0,np.mean(tsum))
   fmap=[]
   rmap=[]
   tmap=[]
@@ -321,6 +331,11 @@ def isPoseClose(coord1,coord2):
   print("isPoseClose::pose dist.",np.linalg.norm(coord1[0:3,3]-coord2[0:3,3]))
   return np.linalg.norm(coord1[0:3,3]-coord2[0:3,3])<Config["near_dist"]
 
+def sortPrefer(plist):
+#  return np.argsort(plist.T[2])[::-1]
+  xpos=plist.T[0]-Param["bucket_width"]/2
+  return np.argsort(np.abs(xpos))
+
 def pScanX(pc,uTc):
   global bucket_border,view_border,cand_pose
   bucket_border=np.array([Param["box0_crop"],Param["bucket_width"]-Param["box0_crop"]])
@@ -366,18 +381,18 @@ def pScanX(pc,uTc):
     elif stickL(f) or stickL(r):
       print("pScanX::return 1 recapt left",smap[0])
       if (f[2]>uZ)+(r[2]>uZ):
-        pubPose([tmap[0]],'pub_apos')
         if (capt_num==1): cand_pose=tmap[0]
         if capt_pos==0: return 0,0,0,0,0,0       #If capture center
+        pubPose([tmap[0]],'pub_apos')
         return 1,view_border[0],0,0,0,0
       else:
         return 0,0,0,0,0,0
     elif stickR(f) or stickR(r):
       print("pScanX::return 1 recapt right",smap[0])
       if (f[2]>uZ)+(r[2]>uZ):
-        pubPose([tmap[0]],'pub_apos')
         if (capt_num==1): cand_pose=tmap[0]
         if capt_pos==0: return 0,0,0,0,0,0       #If capture center
+        pubPose([tmap[0]],'pub_apos')
         return 1,view_border[1],0,0,0,0
       else:
         return 0,0,0,0,0,0
@@ -399,6 +414,7 @@ def pScanX(pc,uTc):
     kmapz=kmap[zsel]
     lselz=lsel[zsel]
     kmapl=kmapz[lselz]
+    pubPose(tmapz,'pub_cands')
     print("def list(>uZ)",kmap,zsel,kmapz,lsel,kmapl)
     k1len=len(kmapz)
     z2sel=zSelect(fmapt,rmapt,uZ-Param["ss_ext"],strict=True)
@@ -409,7 +425,7 @@ def pScanX(pc,uTc):
         fmapl=fmapz[lselz]
         rmapl=rmapz[lselz]
         tmapl=tmapz[lselz]
-        zsort=np.argsort(fmapl.T[2])[::-1]
+        zsort=sortPrefer(fmapl)
         kmapl=kmapl[zsort]
         tmapl=tmapl[zsort]
         fmapl=fmapl[zsort]
@@ -426,14 +442,14 @@ def pScanX(pc,uTc):
           klen=sum(lselz)
         return klen,f[0],f[1],f[2],r[2]-f[2],ztop-max(r[2],f[2])
       else:
-        zsort=np.argsort(fmapz.T[2])[::-1]
+        zsort=sortPrefer(fmapz)
         print("pScanX::return recapt",zsort,lselz)
         if capt_pos==0:          #If capture center
           if sum(lselz)!=1:
             klen=sum(lselz)
         for l,f,tr in zip(lselz[zsort],fmapz[zsort],tmapz[zsort]):
           if not l:
-            pubPose([tr],'pub_apos')
+            if klen>0: pubPose([tr],'pub_apos')
             return klen,f[0],0,0,0,0
         return 0,0,0,0,0,0
     elif capt_pos==0:
@@ -452,7 +468,7 @@ def pScanX(pc,uTc):
         fmapl=fmapz[lselz]
         rmapl=rmapz[lselz]
         tmapl=tmapz[lselz]
-        zsort=np.argsort(fmapl.T[2])[::-1]
+        zsort=sortPrefer(fmapl)
         kmapl=kmapl[zsort]
         tmapl=tmapl[zsort]
         fmapl=fmapl[zsort]
@@ -632,6 +648,7 @@ def cb_clear(msg):
   pubPose(np.array([]),'pub_contours')
   pubPose(np.array([]),'pub_peaks')
   pubPose(np.array([]),'pub_apos')
+  pubPose(np.array([]),'pub_cands')
   cand_pose=None
   Scene=Pnul()
   print("prepro::cb_clear")
@@ -775,6 +792,7 @@ pub_solve=rospy.Publisher("~solved",Bool,queue_size=1)
 pub_score=rospy.Publisher("~score",Float32MultiArray,queue_size=1)
 pub_apos=rospy.Publisher("/prepro/apos",PoseArray,queue_size=1)
 pub_peaks=rospy.Publisher("/prepro/peaks",PoseArray,queue_size=1)
+pub_cands=rospy.Publisher("/prepro/cands",PoseArray,queue_size=1)
 pub_contours=rospy.Publisher("/prepro/contour",PoseArray,queue_size=1)
 pub_axis=rospy.Publisher("/update/config_tf",TransformStamped,queue_size=1)
 pub_master=rospy.Publisher("/prepro/master/floats",numpy_msg(Floats),queue_size=1)

@@ -12,10 +12,7 @@ from std_msgs.msg import ColorRGBA
 from geometry_msgs.msg import Pose, Point, Quaternion, Vector3, Polygon, Transform
 from tf import transformations # rotation_matrix(), concatenate_matrices()
 from rovi_utils import tflib
-# 2021/03/17 hato ------------------------------ start ------------------------------
-#import rviz_tools_py as rviz_tools
 from rviz_tools_py import rviz_tools
-# 2021/03/17 hato ------------------------------  end  ------------------------------
 
 
 # Initialize the ROS Node
@@ -23,10 +20,7 @@ rospy.init_node('cutter', anonymous=False, log_level=rospy.INFO, disable_signals
 
 # Define exit handler
 def cleanup_node():
-  # 2021/03/16 hato ------------------------------ start ------------------------------
-  # print "Shutting down node"
   print("Shutting down node")
-  # 2021/03/16 hato ------------------------------  end  ------------------------------
   markers.deleteAllMarkers()
 
 rospy.on_shutdown(cleanup_node)

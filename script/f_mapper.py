@@ -22,21 +22,22 @@ def pmap(data):
   return res
 
 def peaks_min(image, crossing=False):
-  try:
-    data=image-np.max(image)
-  except:
-    return []
+  if len(image)==0: return []
+  data=image-np.max(image)
   data=-data
   xmap=[]
   ymap=[]
   for d in data.T:
-#    ymap.append(flatten(list(map(lambda p:np.asarray(find_peaks(p[1])[0])+p[0],pmap(d)))))
-    ymap.append(flatten(find_peaks(d)))
+    ymap.append(flatten(list(map(lambda p:np.asarray(find_peaks(p[1])[0])+p[0],pmap(d)))))
+#    ymap.append(flatten(find_peaks(d)))
+#  print("peaks_min ymap",ymap)
   psel=[]
   if crossing:
     for d in data:
+#      print("peaks_min xarray",pmap(d))
 #      xmap.append(flatten(list(map(lambda p:np.asarray(find_peaks(p[1])[0])+p[0],pmap(d)))))
       xmap.append(flatten(find_peaks(d)))
+#    print("peaks_min xmap",xmap)
     for j,l in enumerate(ymap):
       for i in l:
         dist=100

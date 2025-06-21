@@ -23,6 +23,5 @@ while not rospy.is_shutdown():
   print("df",devname,dft)
   dfn=[s for s in dft.split() if '%' in s][0]  
   print("df used",dfn[:-1])
-#  if int(dfn[:-1])>90: pub_df.publish(mTrue)
-  if int(dfn[:-1])>60: pub_df.publish(mTrue)
+  if int(dfn[:-1])>90: pub_df.publish(mTrue)
   rospy.sleep(60)

@@ -4,6 +4,7 @@ config:
     recipe:
       link: rovi_csp/recipe
       dir: rovi_csp/recipe.d
+      default: 1000
     altitude: '+0'
     message:
       halt: "を停止します"

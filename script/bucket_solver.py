@@ -3,8 +3,6 @@
 import numpy as np
 import open3d as o3d
 import time
-from scipy.signal import find_peaks,argrelmax
-
 
 def pTr(RT,pc):
   if len(RT)<4:
@@ -17,18 +15,18 @@ def pSliceZ(pc,th,points,step=1,top=False):
   zmin=int(np.min(pc[:,2]))
   zmax=int(np.max(pc[:,2]))
   ps=list(map(lambda z: pc[np.ravel(np.abs(pc.T[2]-z)<th)],range(zmin,zmax,step)))
-  sp=ps[::-1]
-  if not top:
-    for n,pl in enumerate(sp):
+  if top:
+    for pl in ps[::-1]:
       if len(pl)>points:
+        print("prepro::pSliceZ top",np.argmax(pl,axis=0))
         return np.ravel(np.mean(pl,axis=0))
+    return None
   else:
-    pn=np.array(list(map(len,sp)))
-    pp=find_peaks(pn,prominence=points)
-    print("bucket_solver::peaks",pp)
-    if len(pp[0])>0:
-      return np.ravel(np.mean(sp[pp[0][0]],axis=0))
-  return None
+    pn=np.array(list(map(len,ps)))
+    print("prepro::pSliceZ layer",np.argmax(pn))
+    pl=ps[np.argmax(pn)]
+    if len(pl)<points: return None
+    return np.ravel(np.mean(pl,axis=0))
 
 def capture(bTc,bTu,Config,Param,Scene):
   bscn=pTr(bTc,Scene)
@@ -45,7 +43,7 @@ def capture(bTc,bTu,Config,Param,Scene):
     report["probables"]=0
     report["prob_m"]=0
     return report
-  ez0=pSliceZ(uscn3,Param["level_vcrop"],Param["level_points"],step=10)  #Cluster edge for Z
+  ez0=pSliceZ(uscn3,Param["level_vcrop"],Param["level_points"],step=10,top=True)  #Cluster edge for Z
   report["probables"]=0 if ez0 is None else 1
   report["prob_m"]=0 if ez0 is None else ez0[2]
   report["prob_x"]=0

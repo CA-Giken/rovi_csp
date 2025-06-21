@@ -4,10 +4,15 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
+        - /Status1
         - /Grid1/Offset1
         - /TF1/Frames1
-      Splitter Ratio: 0.5
-    Tree Height: 739
+        - /Marker1/Status1
+        - /Grid3/Offset1
+        - /Grid5/Offset1
+      Splitter Ratio: 0.46388888359069824
+    Tree Height: 749
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -21,20 +26,20 @@ Panels:
     Expanded:
       - /Current View1
     Name: Views
-    Splitter Ratio: 0.5
+    Splitter Ratio: 0.6038781404495239
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud(Scene)
 Preferences:
-  PromptSaveOnExit: true
+  PromptSaveOnExit: false
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.5
-      Cell Size: 50
+      Cell Size: 100
       Class: rviz/Grid
       Color: 160; 160; 164
       Enabled: true
@@ -46,9 +51,9 @@ Visualization Manager:
       Offset:
         X: 0
         Y: 0
-        Z: 0
+        Z: -600
       Plane: XY
-      Plane Cell Count: 30
+      Plane Cell Count: 100
       Reference Frame: world
       Value: true
     - Class: rviz/Image
@@ -75,7 +80,7 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: false
-    - Alpha: 0.5
+    - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 10
@@ -96,7 +101,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 2
-      Size (m): 0.009999999776482582
+      Size (m): 1.5
       Style: Points
       Topic: /master/surface/pc
       Unreliable: false
@@ -123,7 +128,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 2
+      Size (Pixels): 1
       Size (m): 1
       Style: Points
       Topic: /scene/surface/pc
@@ -152,7 +157,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 2
-      Size (m): 0.009999999776482582
+      Size (m): 2
       Style: Points
       Topic: /master/surface/pc0
       Unreliable: false
@@ -168,10 +173,10 @@ Visualization Manager:
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud
-      Color: 0; 0; 0
+      Color: 255; 255; 255
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -182,46 +187,18 @@ Visualization Manager:
       Size (Pixels): 1
       Size (m): 1
       Style: Points
-      Topic: /rsim/scene
+      Topic: /prepro/master/pc
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base:
-          Value: false
-        base_link:
-          Value: true
-        camera:
-          Value: true
-        camera/master0:
-          Value: false
-        camera/master0/journal:
-          Value: true
-        ee_link:
-          Value: true
-        flange:
-          Value: true
-        mount:
-          Value: false
-        prepro:
-          Value: true
-        preproV1:
-          Value: true
-        preproV2:
-          Value: true
-        tool0:
-          Value: true
-        tool0_controller:
-          Value: false
-        world:
-          Value: false
-        wrist_3_link:
-          Value: true
       Marker Alpha: 1
       Marker Scale: 300
       Name: TF
@@ -229,29 +206,9 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        world:
-          base_link:
-            base:
-              prepro:
-                preproV1:
-                  {}
-                preproV2:
-                  {}
-              tool0_controller:
-                {}
-          camera/master0:
-            camera/master0/journal:
-              {}
-      Update Interval: 0
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /csp_marker
-      Name: Marker
-      Namespaces:
         {}
-      Queue Size: 100
-      Value: true
+      Update Interval: 0
+      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /cutter_marker
@@ -260,7 +217,7 @@ Visualization Manager:
         Rectangle: true
       Queue Size: 100
       Value: true
-    - Alpha: 1
+    - Alpha: 0.5
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -328,9 +285,186 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /ycam_marker
+      Name: Marker
+      Namespaces:
+        Mesh: true
+      Queue Size: 4
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /bucket_marker
+      Name: Marker
+      Namespaces:
+        Mesh: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Cell Size: 30
+      Class: rviz/Grid
+      Color: 0; 170; 0
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: -150
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: preproV1
+      Value: true
+    - Alpha: 1
+      Cell Size: 30
+      Class: rviz/Grid
+      Color: 0; 170; 0
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 150
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: preproV2
+      Value: true
+    - Alpha: 1
+      Arrow Length: 100
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz/PoseArray
+      Color: 255; 255; 0
+      Enabled: false
+      Head Length: 3
+      Head Radius: 5
+      Name: PoseArray
+      Queue Size: 10
+      Shaft Length: 0
+      Shaft Radius: 0
+      Shape: Arrow (3D)
+      Topic: /prepro/contour
+      Unreliable: false
+      Value: false
+    - Alpha: 0.5
+      Arrow Length: 100
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz/PoseArray
+      Color: 198; 198; 198
+      Enabled: true
+      Head Length: 20
+      Head Radius: 40
+      Name: PoseArray
+      Queue Size: 10
+      Shaft Length: 500
+      Shaft Radius: 20
+      Shape: Arrow (3D)
+      Topic: /prepro/peaks
+      Unreliable: false
+      Value: true
+    - Align Bottom: false
+      Background Alpha: 0.800000011920929
+      Background Color: 0; 0; 0
+      Class: jsk_rviz_plugin/OverlayText
+      Enabled: true
+      Foreground Alpha: 0.800000011920929
+      Foreground Color: 25; 255; 240
+      Invert Shadow: false
+      Name: OverlayText
+      Overtake BG Color Properties: false
+      Overtake FG Color Properties: false
+      Overtake Position Properties: false
+      Topic: /report/error
+      Value: true
+      font: DejaVu Sans Mono
+      height: 128
+      left: 0
+      line width: 2
+      text size: 12
+      top: 0
+      width: 128
+    - Alpha: 1
+      Arrow Length: 100
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz/PoseArray
+      Color: 255; 170; 0
+      Enabled: true
+      Head Length: 25
+      Head Radius: 45
+      Name: PoseArray
+      Queue Size: 10
+      Shaft Length: 498
+      Shaft Radius: 30
+      Shape: Arrow (3D)
+      Topic: /prepro/apos
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Cell Size: 30
+      Class: rviz/Grid
+      Color: 0; 170; 0
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 150
+      Plane: YZ
+      Plane Cell Count: 10
+      Reference Frame: preproV1
+      Value: true
+    - Alpha: 1
+      Cell Size: 30
+      Class: rviz/Grid
+      Color: 0; 170; 0
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 150
+      Plane: YZ
+      Plane Cell Count: 10
+      Reference Frame: preproV2
+      Value: true
+    - Alpha: 0.5
+      Arrow Length: 100
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz/PoseArray
+      Color: 255; 0; 127
+      Enabled: true
+      Head Length: 20
+      Head Radius: 40
+      Name: PoseArray
+      Queue Size: 10
+      Shaft Length: 500
+      Shaft Radius: 20
+      Shape: Arrow (3D)
+      Topic: /prepro/cands
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
-    Background Color: 16; 93; 251
+    Background Color: 0; 85; 127
     Default Light: true
     Fixed Frame: world
     Frame Rate: 3
@@ -356,7 +490,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 988.3225708007812
+      Distance: 2083.711181640625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -364,29 +498,69 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 62.488346099853516
-        Y: -359.2821044921875
-        Z: 62.36708450317383
-      Focal Shape Fixed Size: false
+        X: -66.6387939453125
+        Y: -9.582334518432617
+        Z: -117.31301879882812
+      Focal Shape Fixed Size: true
       Focal Shape Size: 50
       Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.009999999776482582
-      Pitch: 1.164796233177185
+      Near Clip Distance: 100
+      Pitch: 1.2047967910766602
       Target Frame: world
-      Yaw: 6.138562202453613
-    Saved: ~
+      Yaw: 1.5966302156448364
+    Saved:
+      - Class: rviz/Orbit
+        Distance: 1580.2996826171875
+        Enable Stereo Rendering:
+          Stereo Eye Separation: 0.05999999865889549
+          Stereo Focal Distance: 1
+          Swap Stereo Eyes: false
+          Value: false
+        Field of View: 0.7853981852531433
+        Focal Point:
+          X: -30.561281204223633
+          Y: -1038.5797119140625
+          Z: 11.390087127685547
+        Focal Shape Fixed Size: true
+        Focal Shape Size: 50
+        Invert Z Axis: false
+        Name: Conveyor
+        Near Clip Distance: 100
+        Pitch: 1.5697963237762451
+        Target Frame: world
+        Yaw: 1.5466307401657104
+      - Class: rviz/Orbit
+        Distance: 3518.783935546875
+        Enable Stereo Rendering:
+          Stereo Eye Separation: 0.05999999865889549
+          Stereo Focal Distance: 1
+          Swap Stereo Eyes: false
+          Value: false
+        Field of View: 0.7853981852531433
+        Focal Point:
+          X: -83.57118225097656
+          Y: -712.1943359375
+          Z: -471.621826171875
+        Focal Shape Fixed Size: true
+        Focal Shape Size: 50
+        Invert Z Axis: false
+        Name: Default
+        Near Clip Distance: 100
+        Pitch: 0.8047968745231628
+        Target Frame: world
+        Yaw: 1.6016310453414917
 Window Geometry:
   Displays:
-    collapsed: false
-  Height: 860
+    collapsed: true
+  Height: 899
   Hide Left Dock: true
-  Hide Right Dock: false
+  Hide Right Dock: true
   Image(left):
     collapsed: true
   Image(right):
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000029500000292fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006300fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000160049006d0061006700650028006c00650066007400290000000016000002920000001800fffffffb000000180049006d006100670065002800720069006700680074002900000001b00000016f0000001800fffffffb0000000a0049006d006100670065010000022e000000bc0000000000000000fb000000180049006d00610067006500280042006f00610072006400290000000040000002df0000000000000000000000010000016a00000327fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fc0000001600000327000000da00fffffffa000000000100000002fb000000100044006900730070006c0061007900730100000000ffffffff0000016a00fffffffb0000000a0056006900650077007300000004de0000016a0000010f00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000077d0000003efc0100000002fb0000000800540069006d006500000000000000077d000003d600fffffffb0000000800540069006d00650100000000000004500000000000000000000004a50000032700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000029e0000034efc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006300fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000160049006d0061006700650028006c006500660074002900000000160000034e0000001800fffffffb000000180049006d006100670065002800720069006700680074002900000001b00000016f0000001800fffffffb0000000a0049006d006100670065010000022e000000bc0000000000000000fb000000180049006d00610067006500280042006f00610072006400290000000040000002df0000000000000000000000010000016b0000034efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fc000000160000034e0000000000fffffffaffffffff0100000002fb000000100044006900730070006c0061007900730000000000ffffffff0000016a00fffffffb0000000a0056006900650077007300000004de0000016a0000010f00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000077d0000003efc0100000002fb0000000800540069006d006500000000000000077d000003d600fffffffb0000000800540069006d00650100000000000004500000000000000000000006120000034e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -394,7 +568,7 @@ Window Geometry:
   Tool Properties:
     collapsed: false
   Views:
-    collapsed: false
-  Width: 1557
-  X: -3
+    collapsed: true
+  Width: 1554
+  X: -2
   Y: 0
